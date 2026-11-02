@@ -1,0 +1,1313 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F8A5B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="만원주택">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>화순군 만원 임대주택 · 시연</title>
+<style>:root {
+  --green: #1F8A5B;
+  --green-dark: #17704A;
+  --green-soft: #EAF6EF;
+  --orange: #F2711C;
+  --orange-soft: #FFF1E6;
+  --red: #D93636;
+  --ink: #1B1F24;
+  --ink-2: #4B5563;
+  --ink-3: #8A94A3;
+  --line: #E6E9ED;
+  --bg: #F5F6F8;
+  --navy: #14213D;
+  --radius: 16px;
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: #E3E7EC; color: var(--ink); }
+button { font: inherit; cursor: pointer; }
+input, textarea { font: inherit; }
+
+.ctl { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 12px 24px; background: var(--navy); color: #fff; }
+.ctl-title { font-weight: 800; font-size: 17px; }
+.ctl-title span { font-weight: 500; font-size: 13px; opacity: .7; margin-left: 6px; }
+.ctl-roles { display: flex; gap: 6px; background: rgba(255,255,255,.1); padding: 4px; border-radius: 10px; }
+.ctl-roles button { border: 0; background: transparent; color: #fff; padding: 7px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; }
+.ctl-roles button.on { background: #fff; color: var(--navy); }
+.ctl-date { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+.ctl-date b { min-width: 120px; text-align: center; }
+.ctl-date button, .ctl-reset { border: 1px solid rgba(255,255,255,.35); background: transparent; color: #fff; border-radius: 8px; padding: 5px 10px; font-size: 13px; }
+.ctl-reset { margin-left: auto; }
+
+.stage { display: flex; justify-content: center; padding: 24px 16px 48px; }
+.phone { position: relative; width: 390px; height: 844px; background: #fff; border-radius: 36px; box-shadow: 0 20px 60px rgba(20,33,61,.25); overflow: hidden; display: flex; flex-direction: column; }
+.statusbar { display: flex; justify-content: space-between; padding: 12px 26px 6px; font-size: 14px; font-weight: 700; }
+.sb-icons { letter-spacing: 2px; font-size: 11px; }
+.demo-strip { background: #EEF0F3; color: var(--ink-3); text-align: center; font-size: 12px; padding: 4px 0; }
+.screen { flex: 1; overflow-y: auto; padding: 18px 22px 28px; }
+.tabs { display: flex; border-top: 1px solid var(--line); background: #fff; }
+.tabs button { flex: 1; border: 0; background: none; padding: 10px 0 16px; font-size: 12px; color: var(--ink-3); display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.tabs button .ic { font-size: 20px; line-height: 1; }
+.tabs button.on { color: var(--green); font-weight: 700; }
+
+.toast { position: absolute; left: 50%; bottom: 84px; transform: translate(-50%, 20px); background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 14px; opacity: 0; transition: .25s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: .95; transform: translate(-50%, 0); }
+
+.top { display: flex; align-items: center; gap: 8px; color: var(--green); font-weight: 700; font-size: 15px; margin-bottom: 14px; }
+.top button { border: 0; background: none; color: var(--green); font-size: 22px; padding: 0 6px 0 0; line-height: 1; }
+.badge-role { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--green); color: var(--green); border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+h1 { font-size: 30px; font-weight: 800; line-height: 1.3; margin: 4px 0 18px; letter-spacing: -0.6px; }
+h2 { font-size: 18px; margin: 22px 0 10px; }
+.sub { color: var(--ink-2); font-size: 15px; margin: -8px 0 16px; }
+.muted { color: var(--ink-3); font-size: 13px; }
+
+.card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+.card.soft { background: var(--green-soft); border-color: transparent; }
+.card.warn { background: var(--orange-soft); border-color: transparent; }
+.card.gray { background: var(--bg); border-color: transparent; }
+.card h3 { margin: 0 0 6px; font-size: 17px; }
+
+.hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; }
+.hero h1 { margin-bottom: 8px; }
+.hero .art { font-size: 64px; line-height: 1; }
+
+.split { display: flex; text-align: center; }
+.split > div { flex: 1; }
+.split > div + div { border-left: 1px solid rgba(31,138,91,.25); }
+.big { font-size: 36px; font-weight: 800; color: var(--green); }
+.pill { display: inline-block; border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 700; }
+.pill.orange { background: #FFE0CC; color: var(--orange); }
+.pill.green { background: var(--green-soft); color: var(--green); }
+.pill.gray { background: var(--bg); color: var(--ink-2); }
+.pill.red { background: #FDE2E2; color: var(--red); }
+
+.btn { display: block; width: 100%; border: 0; border-radius: 14px; background: var(--green); color: #fff; font-weight: 700; font-size: 17px; padding: 15px; margin-top: 14px; }
+.btn:hover { background: var(--green-dark); }
+.btn.ghost { background: #fff; color: var(--green); border: 1px solid var(--green); }
+.btn.orange { background: var(--orange); }
+.btn:disabled { background: #C9CED6; cursor: default; }
+
+.q { margin-bottom: 14px; }
+.q label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.opts { display: flex; gap: 8px; }
+.opts button { flex: 1; border: 1.5px solid var(--line); background: var(--bg); border-radius: 12px; padding: 12px 6px; font-weight: 600; color: var(--ink-2); }
+.opts button.on { border-color: var(--green); background: var(--green-soft); color: var(--green); }
+.opts button.on::before { content: '✓ '; }
+
+.result { display: flex; gap: 12px; align-items: center; }
+.result .mark { width: 42px; height: 42px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 22px; flex: none; }
+.result.no .mark { background: var(--red); }
+.result b { font-size: 18px; display: block; }
+
+.steps { display: flex; justify-content: space-between; position: relative; margin: 6px 4px 18px; }
+.steps::before { content: ''; position: absolute; top: 17px; left: 18px; right: 18px; height: 3px; background: var(--line); }
+.steps .s { position: relative; text-align: center; font-size: 13px; color: var(--ink-3); width: 60px; }
+.steps .dot { width: 36px; height: 36px; border-radius: 50%; background: #EEF0F3; color: var(--ink-3); display: grid; place-items: center; margin: 0 auto 4px; font-weight: 800; }
+.steps .s.done .dot { background: var(--green); color: #fff; }
+.steps .s.now .dot { background: #fff; border: 3px solid var(--green); color: var(--green); }
+.steps .s.now, .steps .s.done { color: var(--green); font-weight: 700; }
+
+.row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.row:last-child { border-bottom: 0; }
+.row .grow { flex: 1; min-width: 0; }
+.row .ttl { font-weight: 700; }
+.row .ic { width: 28px; text-align: center; font-size: 20px; }
+.row.click { cursor: pointer; }
+.row.click:hover { background: var(--bg); }
+.chev { color: var(--ink-3); }
+
+.check { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #C9CED6; display: grid; place-items: center; flex: none; color: #fff; font-size: 14px; }
+.check.on { background: var(--green); border-color: var(--green); }
+.check.warn { background: var(--orange); border-color: var(--orange); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 10px 12px; font-size: 14px; }
+.chips button.chip.on { background: var(--green); color: #fff; border-color: var(--green); }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat { border-radius: var(--radius); padding: 14px; background: var(--bg); cursor: pointer; border: 0; text-align: left; }
+.stat.soft { background: var(--green-soft); }
+.stat.warn { background: var(--orange-soft); }
+.stat .k { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.stat .v { font-size: 34px; font-weight: 800; margin-top: 4px; }
+.stat.soft .v { color: var(--green); }
+.stat.warn .v, .stat.warn .k { color: var(--orange); }
+
+.photo { border: 2px dashed #C9CED6; border-radius: var(--radius); height: 150px; display: grid; place-items: center; color: var(--ink-3); background: var(--bg); cursor: pointer; overflow: hidden; }
+.photo img { width: 100%; height: 100%; object-fit: cover; }
+textarea { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: var(--bg); resize: none; }
+.timeline { padding-left: 6px; }
+.timeline .t { display: flex; gap: 10px; align-items: center; padding: 6px 0; color: var(--ink-3); }
+.timeline .t.done, .timeline .t.now { color: var(--ink); }
+.timeline .t.now { font-weight: 700; color: var(--green); }
+.preview { background: var(--orange-soft); color: var(--orange); border-radius: 12px; padding: 14px; font-weight: 700; font-size: 16px; }
+.note { font-size: 12px; color: var(--ink-3); margin-top: 8px; }
+.center { text-align: center; }
+.empty { text-align: center; color: var(--ink-3); padding: 40px 0; }
+.celebrate { font-size: 72px; text-align: center; margin: 4px 0; }
+
+.hero-bg { margin: -18px -22px 16px; padding: 18px 22px 0; min-height: 268px; background: #F3F1E7 url(hero.jpg) center bottom / cover no-repeat; }
+.hero-bg h1 { margin-bottom: 6px; text-shadow: 0 1px 0 rgba(255,255,255,.6); }
+.hero-bg .sub { margin: 0; }
+.join-hero { min-height: 250px; }
+.hello { display: inline-block; background: rgba(255,255,255,.85); color: var(--green); font-weight: 700; font-size: 13px; padding: 4px 10px; border-radius: 999px; margin-bottom: 4px; }
+.field { width: 100%; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 16px; background: var(--bg); }
+.field:focus { outline: none; border-color: var(--green); background: #fff; }
+.big-field { font-size: 32px; letter-spacing: 12px; text-align: center; font-weight: 800; }
+.modebar { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.modebar:empty { display: none; }
+.modebar .who { font-weight: 800; color: var(--green); }
+.seg { display: flex; background: var(--bg); border-radius: 8px; padding: 2px; margin-left: auto; }
+.seg button { border: 0; background: none; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.seg button.on { background: #fff; color: var(--green); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.mini { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 4px 8px; font-size: 12px; color: var(--ink-2); }
+.net { font-size: 12px; font-weight: 700; }
+.net.ok { color: #2BB673; }
+.net.bad { color: var(--orange); }
+.ctl-extra { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.ctl-extra .ctl-reset { margin-left: 0; }
+.code-chip { background: #fff; color: var(--navy); border-radius: 8px; padding: 4px 10px; font-weight: 800; font-size: 14px; }
+.join-card { display: flex; gap: 14px; align-items: center; }
+.join-card img { background: #fff; border-radius: 10px; padding: 4px; flex: none; }
+.join-card .code { font-size: 18px; margin: 2px 0; }
+.join-card .code b { font-size: 26px; letter-spacing: 3px; color: var(--green); }
+body[data-mode="class"] .ctl, body[data-mode="none"] .ctl-roles, body[data-mode="none"] .ctl-date { display: none; }
+body[data-mode="solo"] .modebar .seg { margin-left: auto; }
+
+@media (min-width: 521px) {
+  body[data-mode="solo"] .modebar, body[data-mode="admin"] .modebar { display: none; }
+}
+@media (max-width: 520px) {
+  body { background: #fff; }
+  .ctl { display: none; }
+  .stage { padding: 0; }
+  .phone { width: 100vw; height: 100dvh; border-radius: 0; box-shadow: none; padding-top: env(safe-area-inset-top); }
+  .statusbar { display: none; }
+  .tabs button { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+}
+.join-hero .sub { max-width: 58%; font-size: 14px; }
+</style>
+</head>
+<body data-mode="none">
+<header class="ctl" data-testid="control-bar">
+  <div class="ctl-title">화순군 만원 임대주택 <span>시연용 가상 앱</span></div>
+  <div class="ctl-roles" id="roles"></div>
+  <div class="ctl-date" id="date"></div>
+  <div class="ctl-extra" id="ctl-extra"></div>
+</header>
+<main class="stage">
+  <div class="phone">
+    <div class="statusbar"><span>9:41</span><span class="sb-icons">▂▄▆ ◔ ▮</span></div>
+    <div class="demo-strip">시연용 가상 화면</div>
+    <div class="modebar" id="modebar"></div>
+    <div class="screen" id="screen" data-testid="screen"></div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="toast" id="toast" role="status"></div>
+  </div>
+</main>
+<script>const Store = (() => {
+  const START_DAY = '2026-11-12';
+  const APPLY_DEADLINE = '2026-11-24';
+  const SEED = 20261102;
+  const FIX_DAYS = 8;
+  const REGISTER_DAYS = 14;
+  const SOON_DAYS = 5;
+  const SLOTS = { youth: 50, newlywed: 50 };
+  const WAITLIST = 20;
+  const MAIN_UNIT = '가상주택 101동 203호';
+  const DOC_LABEL = { application: '신청서', consent: '개인정보 동의서', resident: '주민등록등본' };
+  const DEFAULT_SCREEN = { applicant: 'home', resident: 'guide', admin: 'dashboard' };
+  const REPAIR_FLOW = ['received', 'checked', 'scheduled', 'done'];
+
+  function prng(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6d2b79f5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function shuffle(list, rand) {
+    const out = list.slice();
+    for (let i = out.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      [out[i], out[j]] = [out[j], out[i]];
+    }
+    return out;
+  }
+
+  function toDate(s) {
+    const [y, m, d] = s.split('-').map(Number);
+    return Date.UTC(y, m - 1, d);
+  }
+
+  function fromDate(ms) {
+    return new Date(ms).toISOString().slice(0, 10);
+  }
+
+  function addDays(s, n) {
+    return fromDate(toDate(s) + n * 86400000);
+  }
+
+  function daysBetween(from, to) {
+    return Math.round((toDate(to) - toDate(from)) / 86400000);
+  }
+
+  function monthDay(s) {
+    const [, m, d] = s.split('-').map(Number);
+    return `${m}월 ${d}일`;
+  }
+
+  const pad = (n, w) => String(n).padStart(w, '0');
+
+  function fixMessage(doc, due) {
+    return `${DOC_LABEL[doc]}을 ${monthDay(due)}까지 올려 주세요`;
+  }
+
+  function seed() {
+    const rand = prng(SEED);
+    const today = START_DAY;
+    const applicants = [{
+      id: 'A001', name: '가상 001', type: 'youth', status: 'none',
+      docs: { application: false, consent: false, resident: false },
+      fixDue: null, fixMsg: null, waitNo: null, unit: null,
+      contractDone: false, moveInDate: null, registered: false, appliedAt: null,
+    }];
+    const types = shuffle([...Array(436).fill('youth'), ...Array(53).fill('newlywed')], rand);
+    types.forEach((type, i) => {
+      const n = i + 2;
+      let status = 'verified';
+      if (i < 37) status = 'needs_fix';
+      else if (i < 157) status = 'submitted';
+      const fixDoc = ['resident', 'consent', 'application'][i % 3];
+      const docs = { application: true, consent: true, resident: true };
+      let fixDue = null;
+      let fixMsg = null;
+      if (status === 'needs_fix') {
+        docs[fixDoc] = false;
+        fixDue = addDays(today, 1 + (i % FIX_DAYS));
+        fixMsg = fixMessage(fixDoc, fixDue);
+      }
+      applicants.push({
+        id: `A${pad(n, 3)}`, name: `가상 ${pad(n, 3)}`, type, status, docs, fixDue, fixMsg,
+        waitNo: null, unit: null, contractDone: false, moveInDate: null, registered: false,
+        appliedAt: addDays(today, -1 - Math.floor(rand() * 20)),
+      });
+    });
+
+    const residents = [];
+    for (let i = 0; i < 40; i++) {
+      const soon = i < 6;
+      residents.push({
+        id: `R${pad(i + 1, 2)}`, name: `가상 입주 ${pad(i + 1, 2)}`,
+        unit: `가상주택 ${102 + Math.floor(i / 10)}동 ${301 + (i % 10)}호`,
+        moveInDate: soon ? addDays(today, -REGISTER_DAYS + i) : addDays(today, -30 - i),
+        registered: !soon,
+      });
+    }
+
+    const kinds = ['보일러', '누수', '도배', '기타'];
+    const descs = ['따뜻한 물이 안 나와요', '욕실 천장에서 물이 새요', '벽지가 들떴어요', '현관문 도어록이 안 열려요'];
+    const repairs = [];
+    for (let i = 0; i < 10; i++) {
+      const r = residents[10 + i];
+      repairs.push({
+        id: `F${pad(i + 1, 3)}`, ownerId: r.id, unit: r.unit, kind: kinds[i % 4], desc: descs[i % 4], photo: null,
+        status: i < 4 ? REPAIR_FLOW[i % 3] : 'done',
+        visit: i % 3 === 2 || i >= 4 ? `${monthDay(addDays(today, i < 4 ? 2 : -3 - i))} 오후` : null,
+        createdAt: addDays(today, -1 - i),
+      });
+    }
+
+    return { today, role: 'applicant', screen: 'home', meId: 'A001', applicants, residents, repairs, lotteryDone: false };
+  }
+
+  function registerDue(person) {
+    return person.moveInDate ? addDays(person.moveInDate, REGISTER_DAYS) : null;
+  }
+
+  function registerList(st) {
+    const people = [
+      ...st.residents,
+      ...st.applicants.filter((a) => a.status === 'won' && a.moveInDate),
+    ];
+    return people
+      .filter((p) => !p.registered)
+      .map((p) => ({ id: p.id, name: p.name, unit: p.unit, due: registerDue(p), left: daysBetween(st.today, registerDue(p)) }))
+      .sort((a, b) => a.left - b.left);
+  }
+
+  function counts(st) {
+    return {
+      applied: st.applicants.filter((a) => a.status !== 'none').length,
+      needsFix: st.applicants.filter((a) => a.status === 'needs_fix').length,
+      deadlineSoon: registerList(st).filter((p) => p.left <= SOON_DAYS).length,
+      repairsOpen: st.repairs.filter((r) => r.status !== 'done').length,
+    };
+  }
+
+  function checkEligibility({ age, household, region }) {
+    if (household !== 'newlywed' && age !== '19-39') {
+      return { ok: false, reason: '청년 신청은 만 19~39세만 할 수 있어요', note: '' };
+    }
+    const note = region === 'outside'
+      ? '당첨되면 입주 후 14일 안에 화순군으로 전입신고를 해야 해요'
+      : '지금 화순군에 살고 있어도 신청할 수 있어요';
+    return { ok: true, reason: household === 'newlywed' ? '신혼부부 조건에 맞아요' : '청년 나이 조건에 맞아요', note };
+  }
+
+  function updateMe(st, fn) {
+    const me = st.applicants.find((a) => a.id === st.meId);
+    fn(me);
+  }
+
+  function runLottery(st) {
+    if (st.lotteryDone) return;
+    const rand = prng(SEED + 7);
+    const me = st.applicants.find((a) => a.id === st.meId);
+    ['youth', 'newlywed'].forEach((type) => {
+      const pool = shuffle(st.applicants.filter((a) => a.type === type && a.status === 'verified' && a.id !== st.meId), rand);
+      let slots = SLOTS[type];
+      let unitNo = 0;
+      if (me.status === 'verified' && me.type === type) {
+        me.status = 'won';
+        me.unit = MAIN_UNIT;
+        slots -= 1;
+      }
+      pool.forEach((a, i) => {
+        if (i < slots) {
+          a.status = 'won';
+          unitNo += 1;
+          const base = type === 'youth' ? 101 : 106;
+          a.unit = `가상주택 ${base + Math.floor(unitNo / 12)}동 ${204 + (unitNo % 12)}호`;
+        } else if (i < slots + WAITLIST) {
+          a.status = 'waitlist';
+          a.waitNo = i - slots + 1;
+        } else {
+          a.status = 'lost';
+        }
+      });
+    });
+    st.lotteryDone = true;
+  }
+
+  function reduce(state, action) {
+    if (action.type === 'reset') return seed();
+    const st = structuredClone(state);
+    switch (action.type) {
+      case 'go': st.screen = action.screen; break;
+      case 'setRole': st.role = action.role; st.screen = DEFAULT_SCREEN[action.role]; break;
+      case 'setToday': st.today = action.date; break;
+      case 'shiftDay': st.today = addDays(st.today, action.n); break;
+      case 'submitApplication':
+        updateMe(st, (me) => { me.docs = { ...action.docs }; me.status = 'submitted'; me.appliedAt = st.today; if (action.applicantType) me.type = action.applicantType; });
+        break;
+      case 'requestFix': {
+        const a = st.applicants.find((x) => x.id === action.id);
+        a.status = 'needs_fix';
+        a.docs[action.doc] = false;
+        a.fixDue = addDays(st.today, FIX_DAYS);
+        a.fixMsg = fixMessage(action.doc, a.fixDue);
+        break;
+      }
+      case 'resubmit':
+        updateMe(st, (me) => { me.docs[action.doc] = true; me.status = 'submitted'; me.fixDue = null; me.fixMsg = null; });
+        break;
+      case 'verify': {
+        const a = st.applicants.find((x) => x.id === action.id);
+        if (Object.values(a.docs).every(Boolean)) a.status = 'verified';
+        break;
+      }
+      case 'runLottery': runLottery(st); break;
+      case 'signContract': updateMe(st, (me) => { if (me.status === 'won') me.contractDone = true; }); break;
+      case 'moveIn': updateMe(st, (me) => { if (me.contractDone) me.moveInDate = st.today; }); break;
+      case 'registerAddress': updateMe(st, (me) => { if (me.moveInDate) me.registered = true; }); break;
+      case 'submitRepair': {
+        const me = st.applicants.find((a) => a.id === st.meId);
+        if (!me.moveInDate) break;
+        st.repairs.unshift({
+          id: `F${pad(st.repairs.length + 1, 3)}`, ownerId: me.id, unit: me.unit, kind: action.kind, desc: action.desc,
+          photo: action.photo || null, status: 'received', visit: null, createdAt: st.today,
+        });
+        break;
+      }
+      case 'repairNext': {
+        const r = st.repairs.find((x) => x.id === action.id);
+        const next = REPAIR_FLOW[REPAIR_FLOW.indexOf(r.status) + 1];
+        if (next) {
+          r.status = next;
+          if (next === 'scheduled') r.visit = `${monthDay(addDays(st.today, 2))} 오후`;
+        }
+        break;
+      }
+      default: throw new Error(`알 수 없는 동작: ${action.type}`);
+    }
+    return st;
+  }
+
+  return {
+    seed, reduce, counts, registerList, checkEligibility, registerDue,
+    addDays, daysBetween, monthDay, fixMessage, DOC_LABEL, SOON_DAYS, REPAIR_FLOW, FIX_DAYS, APPLY_DEADLINE,
+  };
+})();
+
+if (typeof module !== 'undefined') module.exports = Store;
+
+const Views = (() => {
+  const S = Store;
+  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const me = (st) => st.applicants.find((a) => a.id === st.meId);
+  const TYPE_LABEL = { youth: '청년 · 1인 가구', newlywed: '신혼부부' };
+  const STATUS = {
+    none: ['신청 전', 'gray'], submitted: ['확인 필요', 'gray'], needs_fix: ['보완 대기', 'orange'],
+    verified: ['확인 완료', 'green'], won: ['당첨', 'green'], waitlist: ['예비', 'orange'], lost: ['미당첨', 'gray'],
+  };
+  const REPAIR_LABEL = { received: '접수', checked: '담당자 확인', scheduled: '방문 예정', done: '완료' };
+
+  const back = (screen, title) => `<div class="top"><button data-action="go" data-screen="${screen}" aria-label="뒤로">‹</button>${esc(title)}</div>`;
+  const brand = '<div class="top">⌂ 화순군 만원 임대주택</div>';
+  const adminBadge = '<div class="badge-role">👤 담당자 화면</div>';
+  const pill = (text, color) => `<span class="pill ${color}">${esc(text)}</span>`;
+  const statusPill = (status) => pill(...STATUS[status]);
+
+  function dday(left) {
+    if (left < 0) return pill(`기한 ${-left}일 지남`, 'red');
+    if (left === 0) return pill('오늘까지', 'red');
+    return pill(`D-${left}`, left <= S.SOON_DAYS ? 'orange' : 'green');
+  }
+
+  function steps(status) {
+    const names = ['접수', '서류 확인', '추첨', '입주'];
+    const now = { submitted: 1, needs_fix: 1, verified: 2, won: 3, waitlist: 3, lost: 3 }[status] ?? 0;
+    return `<div class="steps">${names.map((n, i) => {
+      const cls = i < now ? 'done' : i === now ? 'now' : '';
+      return `<div class="s ${cls}"><div class="dot">${i < now ? '✓' : i + 1}</div>${n}</div>`;
+    }).join('')}</div>`;
+  }
+
+  function home(st, ui) {
+    const m = me(st);
+    const left = S.daysBetween(st.today, S.APPLY_DEADLINE);
+    const deadline = left >= 0 ? `접수 마감 D-${left}` : '접수 마감';
+    let action = '<button class="btn" data-action="go" data-screen="eligibility" data-testid="start-eligibility">신청할 수 있는지 30초 확인</button>';
+    let mine = '';
+    if (m.status !== 'none') {
+      action = `<button class="btn" data-action="go" data-screen="${m.status === 'won' ? 'result' : 'my'}" data-testid="home-my">${m.status === 'won' ? '당첨 결과 보기' : '내 신청 보기'}</button>`;
+      mine = `<div class="card"><div class="row"><div class="grow"><div class="ttl">내 신청</div><div class="muted">${esc(m.appliedAt ? S.monthDay(m.appliedAt) + ' 접수' : '')}</div></div>${statusPill(m.status)}</div></div>`;
+    }
+    const hello = ui.mode === 'class' ? `<div class="hello">${esc(m.name)}님, 반가워요</div>` : '';
+    return `<div class="hero-bg">${brand}${hello}<h1>월 1만 원으로<br>화순에<br>살아 보세요</h1></div>
+      <div class="card soft"><h3 style="color:var(--green)">이번 모집 안내</h3>
+        <div class="split"><div><div class="muted">청년</div><div class="big">50호</div></div><div><div class="muted">신혼부부</div><div class="big">50호</div></div></div>
+        <div class="center" style="margin-top:12px">${pill(deadline, 'orange')}</div></div>
+      ${mine}${action}`;
+  }
+
+  function eligibility(st, ui) {
+    const e = ui.elig;
+    const opt = (key, value, label) => `<button class="${e[key] === value ? 'on' : ''}" data-action="elig" data-key="${key}" data-value="${value}" data-testid="elig-${key}-${value}">${label}</button>`;
+    let result = '';
+    if (e.age && e.household && e.region) {
+      const r = S.checkEligibility(e);
+      result = r.ok
+        ? `<div class="card soft"><div class="result"><div class="mark">✓</div><div><b style="color:var(--green)">신청할 수 있어요</b><span class="muted">${esc(r.reason)}</span></div></div><div class="note">${esc(r.note)}</div></div>
+           <button class="btn" data-action="go" data-screen="apply" data-testid="go-apply">신청 시작하기</button>`
+        : `<div class="card warn"><div class="result no"><div class="mark">!</div><div><b>이번에는 신청할 수 없어요</b><span class="muted">${esc(r.reason)}</span></div></div></div>`;
+    }
+    return `${back('home', '자격 미리 확인')}<h1>세 가지만<br>알려 주세요</h1>
+      <div class="q"><label>나이</label><div class="opts">${opt('age', '19-39', '만 19~39세')}${opt('age', 'other', '그 외')}</div></div>
+      <div class="q"><label>가구 형태</label><div class="opts">${opt('household', 'single', '청년 1인 가구')}${opt('household', 'newlywed', '신혼부부')}</div></div>
+      <div class="q"><label>현재 사는 곳</label><div class="opts">${opt('region', 'outside', '화순군 밖')}${opt('region', 'hwasun', '화순군')}</div></div>
+      ${result}`;
+  }
+
+  function apply(st, ui) {
+    const m = me(st);
+    if (m.status !== 'none') return my(st, ui);
+    const rows = Object.entries(S.DOC_LABEL).map(([key, label]) => {
+      const on = ui.docs[key];
+      return `<div class="row"><div class="check ${on ? 'on' : ''}">${on ? '✓' : ''}</div><div class="grow"><div class="ttl">${label}</div><div class="muted">${on ? '올렸어요' : '아직 안 올렸어요'}</div></div>
+        <button class="pill ${on ? 'green' : 'gray'}" style="border:0" data-action="toggleDoc" data-doc="${key}" data-testid="doc-${key}">${on ? '올림 ✓' : '올리기'}</button></div>`;
+    }).join('');
+    const ready = ui.docs.application && ui.docs.consent;
+    return `${back('eligibility', '신청서 내기')}<h1>서류를 올려 주세요</h1>
+      <div class="card gray"><div class="muted">신청자</div><b>${esc(m.name)}</b> · ${TYPE_LABEL[ui.elig.household === 'newlywed' ? 'newlywed' : 'youth']}</div>
+      <div class="card">${rows}</div>
+      <div class="note">시연에서는 실제 파일을 보내지 않아요. 빠진 서류가 있으면 담당자가 보완을 요청해요.</div>
+      <button class="btn" data-action="submitApp" data-testid="submit-app" ${ready ? '' : 'disabled'}>신청서 내기</button>`;
+  }
+
+  function my(st) {
+    const m = me(st);
+    if (m.status === 'none') {
+      return `${brand}<h1>아직 신청하지<br>않았어요</h1><button class="btn" data-action="go" data-screen="eligibility">신청할 수 있는지 30초 확인</button>`;
+    }
+    const title = {
+      submitted: '서류를 확인하고 있어요', needs_fix: '서류를 보완해 주세요', verified: '추첨을 기다리고 있어요',
+      won: '당첨됐어요', waitlist: `예비 ${m.waitNo}번이에요`, lost: '이번에는 아쉽게도<br>안 됐어요',
+    }[m.status];
+    let body = '';
+    if (m.status === 'needs_fix') {
+      const missing = Object.keys(m.docs).find((k) => !m.docs[k]);
+      body = `<div class="card warn"><div class="result"><div class="mark" style="background:var(--orange)">!</div><div><b>${S.DOC_LABEL[missing]}이 빠졌어요</b>
+          <span style="color:var(--orange);font-weight:800">${S.monthDay(m.fixDue)}까지</span></div></div><div class="note">빠진 서류 한 가지만 올려 주세요</div></div>
+        <div class="card"><div class="row"><div class="ic">📄</div><div class="grow ttl">${S.DOC_LABEL[missing]}</div>${pill('빠짐', 'orange')}</div></div>
+        <button class="btn" data-action="resubmit" data-doc="${missing}" data-testid="resubmit">서류 다시 올리기</button>`;
+    } else if (m.status === 'submitted') {
+      body = '<div class="card gray">담당자가 서류를 확인하면 알림으로 알려 드려요.</div>';
+    } else if (m.status === 'verified') {
+      body = '<div class="card soft">서류 확인이 끝났어요. 공개 추첨 결과가 나오면 알려 드려요.</div>';
+    } else {
+      body = '<button class="btn" data-action="go" data-screen="result" data-testid="go-result">추첨 결과 보기</button>';
+    }
+    return `${back('home', '내 신청')}<h1>${title}</h1>${steps(m.status)}<div class="muted" style="margin:-8px 0 12px">현재 단계 · ${STATUS[m.status][0]}</div>${body}`;
+  }
+
+  function result(st, ui) {
+    const m = me(st);
+    if (!st.lotteryDone || !['won', 'waitlist', 'lost'].includes(m.status)) {
+      return `${back('home', '추첨 결과')}<div class="empty">아직 추첨 전이에요.<br>결과가 나오면 알려 드려요.</div>`;
+    }
+    if (m.status !== 'won') return my(st);
+    return `${back('home', '추첨 결과')}<div class="celebrate">🏡🔑</div>
+      <h1 class="center" style="font-size:34px">당첨됐어요</h1><p class="sub center">화순에서의 새 출발을 응원해요</p>
+      <div class="card soft center"><div class="muted">배정된 집 · 가상 정보</div><div style="font-size:24px;font-weight:800;margin:6px 0">${esc(m.unit)}</div>
+        <div style="color:var(--green);font-weight:700">월 임대료 1만 원</div></div>
+      <div class="muted center">🛡 경찰이 입회한 공개 추첨으로 선정했어요</div>
+      <div class="note center">${ui.mode === 'class' ? '시연 설정: 서류 확인을 마친 수강생은 모두 당첨돼요' : '시연 설정: 주인공은 당첨으로 정해 두었어요'}</div>
+      <button class="btn" data-action="setRole" data-role="resident" data-testid="start-move-in">입주 준비 시작</button>`;
+  }
+
+  function alerts(st) {
+    const m = me(st);
+    const items = [];
+    if (m.status !== 'none') items.push(['📨', '신청서를 받았어요', m.appliedAt]);
+    if (m.status === 'needs_fix') items.push(['📄', m.fixMsg, null]);
+    if (['verified', 'won', 'waitlist', 'lost'].includes(m.status)) items.push(['✅', '서류 확인이 끝났어요', null]);
+    if (m.status === 'won') items.push(['🎉', `당첨됐어요 · ${m.unit}`, null]);
+    if (m.moveInDate && !m.registered) items.push(['⏰', `전입신고는 ${S.monthDay(S.registerDue(m))}까지예요`, null]);
+    st.repairs.filter((r) => r.ownerId === m.id).forEach((r) => items.push(['🔧', `${r.kind} 접수 · ${REPAIR_LABEL[r.status]}`, r.createdAt]));
+    const list = items.reverse().map(([ic, t, d]) => `<div class="row"><div class="ic">${ic}</div><div class="grow">${esc(t)}</div><div class="muted">${d ? S.monthDay(d) : ''}</div></div>`).join('');
+    return `${brand}<h1>알림</h1>${list ? `<div class="card">${list}</div>` : '<div class="empty">아직 받은 알림이 없어요</div>'}<div class="note">꼭 필요한 순간에만 알려 드려요.</div>`;
+  }
+
+  function notMovedIn(title) {
+    return `<div class="top">${esc(title)}</div><div class="empty">아직 입주 전이에요.<br>신청자 화면에서 당첨을 확인하면<br>여기서 입주 준비를 할 수 있어요.</div>`;
+  }
+
+  function guide(st) {
+    const m = me(st);
+    if (m.status !== 'won') return notMovedIn('입주 준비 길잡이');
+    const contract = m.contractDone
+      ? `<div class="card soft"><div class="result"><div class="check on">✓</div><div class="grow"><b>계약하기</b></div>${pill('완료', 'green')}</div></div>`
+      : `<div class="card"><div class="result"><div class="check"></div><div class="grow"><b>계약하기</b><span class="muted">인구청년정책과 방문 계약(가상)</span></div></div><button class="btn ghost" data-action="contract" data-testid="contract">계약 완료</button></div>`;
+    let moveIn;
+    if (m.moveInDate) moveIn = `<div class="card soft"><div class="result"><div class="check on">✓</div><div class="grow"><b>이사하기</b><span class="muted">${S.monthDay(m.moveInDate)} 입주</span></div>${pill('완료', 'green')}</div></div>`;
+    else moveIn = `<div class="card gray"><div class="result"><div class="check"></div><div class="grow"><b>이사하기</b></div></div><button class="btn ghost" data-action="moveIn" data-testid="move-in" ${m.contractDone ? '' : 'disabled'}>오늘 이사했어요</button></div>`;
+    let register;
+    if (m.registered) register = `<div class="card soft"><div class="result"><div class="check on">✓</div><div class="grow"><b>전입신고</b></div>${pill('완료', 'green')}</div></div>`;
+    else if (m.moveInDate) {
+      const due = S.registerDue(m);
+      const left = S.daysBetween(st.today, due);
+      register = `<div class="card warn" data-testid="register-card"><div class="result"><div class="check warn"></div><div class="grow"><b>전입신고</b><span style="color:var(--orange);font-size:14px">입주 후 14일 안에 · ${S.monthDay(due)}까지</span></div>${dday(left)}</div>
+        <button class="btn orange" data-action="register" data-testid="register">전입신고 했어요</button></div>`;
+    } else register = '<div class="card gray"><div class="result"><div class="check"></div><div class="grow"><b>전입신고</b><span class="muted">이사하면 기한이 시작돼요</span></div></div></div>';
+    return `<div class="top">입주 준비 길잡이</div><h1>새집으로 가는 준비</h1>${contract}${moveIn}${register}
+      <h2>집 주변 생활 정보</h2><div class="grid2"><div class="chip">🏫 초등학교 도보 5분</div><div class="chip">🛒 마트 도보 8분</div><div class="chip">🏥 병원 도보 10분</div><div class="chip">🚌 버스 정류장 3분</div></div>`;
+  }
+
+  function repair(st, ui) {
+    const m = me(st);
+    if (!m.moveInDate) return notMovedIn('고장 접수');
+    const kinds = ['보일러', '누수', '도배', '기타'].map((k) => `<button class="chip ${ui.repair.kind === k ? 'on' : ''}" data-action="pickKind" data-kind="${k}" data-testid="kind-${k}">${k}</button>`).join('');
+    const photo = ui.repair.photo ? `<img src="${esc(ui.repair.photo)}" alt="첨부한 사진">` : '📷<br><span class="muted">사진 올리기 (선택)</span>';
+    const ready = ui.repair.kind && ui.repair.desc.trim();
+    return `${back('guide', '고장 접수')}<h1>어디가 불편하세요?</h1>
+      <label class="photo" data-testid="photo-box">${photo}<input type="file" accept="image/*" hidden data-action="pickPhoto" data-testid="photo-input"></label>
+      <h2>고장 종류</h2><div class="chips">${kinds}</div>
+      <h2>설명</h2><textarea rows="3" id="repair-desc" data-testid="repair-desc" placeholder="예: 따뜻한 물이 나오지 않아요">${esc(ui.repair.desc)}</textarea>
+      <button class="btn" data-action="submitRepair" data-testid="submit-repair" ${ready ? '' : 'disabled'}>접수하기</button>`;
+  }
+
+  function timeline(r) {
+    const idx = S.REPAIR_FLOW.indexOf(r.status);
+    return `<div class="timeline">${S.REPAIR_FLOW.map((s, i) => {
+      const cls = i < idx ? 'done' : i === idx ? 'now' : '';
+      const extra = s === 'scheduled' && r.visit ? ` · ${esc(r.visit)}` : '';
+      return `<div class="t ${cls}"><div class="check ${i <= idx ? 'on' : ''}">${i <= idx ? '✓' : ''}</div>${REPAIR_LABEL[s]}${extra}</div>`;
+    }).join('')}</div>`;
+  }
+
+  function repairStatus(st) {
+    const m = me(st);
+    if (!m.moveInDate) return notMovedIn('내 접수');
+    const mine = st.repairs.filter((r) => r.ownerId === m.id);
+    const list = mine.map((r) => `<div class="card" data-testid="my-repair-${r.id}"><div class="row" style="border:0;padding-top:0"><div class="grow"><div class="ttl">${esc(r.kind)}</div><div class="muted">${esc(r.desc)}</div></div>${pill(REPAIR_LABEL[r.status], r.status === 'done' ? 'green' : 'orange')}</div>
+      ${r.photo ? `<div class="photo" style="height:120px;cursor:default"><img src="${esc(r.photo)}" alt="첨부 사진"></div>` : ''}${timeline(r)}</div>`).join('');
+    return `${back('guide', '내 접수')}<h1>처리 상황</h1>${list || '<div class="empty">접수한 내용이 없어요</div>'}`;
+  }
+
+  function dashboard(st, ui) {
+    const c = S.counts(st);
+    const submitted = st.applicants.filter((a) => a.status === 'submitted').length;
+    const stat = (cls, k, v, screen, testid, filter) => `<button class="stat ${cls}" data-action="go" data-screen="${screen}" ${filter ? `data-filter="${filter}"` : ''} data-testid="${testid}"><div class="k">${k}</div><div class="v">${v}</div></button>`;
+    const todo = (ic, t, n, screen, testid) => `<div class="row click" data-action="go" data-screen="${screen}" data-testid="${testid}"><div class="ic">${ic}</div><div class="grow">${t}</div><div class="muted">${n}</div><span class="chev">›</span></div>`;
+    const joinCard = ui.mode === 'admin' ? `<div class="card soft join-card" data-testid="join-card"><img src="qr-${esc(ui.code)}.svg" alt="입장 QR" width="96" height="96" onerror="this.remove()"><div><div class="muted">수강생 입장</div><div class="code">반 코드 <b>${esc(ui.code)}</b></div><div class="muted">QR을 찍고 '홈 화면에 추가'</div><div class="muted">입장한 수강생 ${st.applicants.filter((a) => a.remote).length}명</div></div></div>` : '';
+    return `${adminBadge}${brand}<h1>오늘의 업무</h1>${joinCard}
+      <div class="grid2">${stat('soft', '신청', c.applied, 'reviewList', 'stat-applied', 'all')}${stat('', '서류 보완 대기', c.needsFix, 'reviewList', 'stat-fix', 'needs_fix')}
+        ${stat('warn', '전입신고 기한 임박', c.deadlineSoon, 'deadline', 'stat-deadline')}${stat('', '고장 접수 처리 중', c.repairsOpen, 'repairs', 'stat-repairs')}</div>
+      <h2>할 일</h2><div class="card">
+        ${todo('📄', '새로 들어온 신청 확인', `${submitted}건`, 'reviewList', 'todo-review')}
+        ${todo('🎲', '공개 추첨 결과 등록', st.lotteryDone ? '완료' : '대기', 'lottery', 'todo-lottery')}
+        ${todo('⏰', '전입신고 기한 안내', `${c.deadlineSoon}건`, 'deadline', 'todo-deadline')}
+        ${todo('🔧', '고장 접수 방문 일정 확인', `${c.repairsOpen}건`, 'repairs', 'todo-repairs')}</div>`;
+  }
+
+  function reviewList(st, ui) {
+    const f = ui.reviewFilter;
+    const match = (a) => (f === 'all' ? a.status !== 'none' : a.status === f);
+    const all = st.applicants.filter(match);
+    const rank = (a) => (a.remote ? 0 : a.id === st.meId ? 1 : 2);
+    const sorted = all.sort((a, b) => rank(a) - rank(b) || (b.appliedAt || '').localeCompare(a.appliedAt || ''));
+    const shown = sorted.slice(0, 20);
+    const count = (v) => st.applicants.filter((a) => (v === 'all' ? a.status !== 'none' : a.status === v)).length;
+    const chip = (v, label) => `<button class="chip ${f === v ? 'on' : ''}" data-action="reviewFilter" data-filter="${v}" data-testid="filter-${v}">${label} ${count(v)}</button>`;
+    const rows = shown.map((a) => `<div class="row click" data-action="openReview" data-id="${a.id}" data-testid="review-${a.id}"><div class="ic">👤</div><div class="grow"><div class="ttl">${esc(a.name)}${a.remote ? ' <span class="pill green">수강생</span>' : a.id === st.meId ? ' <span class="pill green">새 신청</span>' : ''}</div><div class="muted">${TYPE_LABEL[a.type]} · ${a.appliedAt ? S.monthDay(a.appliedAt) : ''}</div></div>${statusPill(a.status)}<span class="chev">›</span></div>`).join('');
+    const more = all.length > 20 ? `<div class="note center">외 ${all.length - 20}건</div>` : '';
+    return `${adminBadge}${back('dashboard', '신청 관리')}<h1>신청서 검토</h1><div class="chips" style="margin-bottom:12px">${chip('all', '전체')}${chip('submitted', '확인 필요')}${chip('needs_fix', '보완 대기')}${chip('verified', '확인 완료')}</div>
+      <div class="card">${rows || '<div class="empty">해당하는 신청이 없어요</div>'}</div>${more}`;
+  }
+
+  function reviewDetail(st, ui) {
+    const a = st.applicants.find((x) => x.id === ui.reviewId);
+    if (!a) return reviewList(st, ui);
+    const docs = Object.entries(S.DOC_LABEL).map(([k, label]) => `<div class="row"><div class="check ${a.docs[k] ? 'on' : 'warn'}">${a.docs[k] ? '✓' : '!'}</div><div class="grow">${label}</div><b style="color:${a.docs[k] ? 'var(--green)' : 'var(--orange)'}">${a.docs[k] ? '확인' : '빠짐'}</b></div>`).join('');
+    const missing = Object.keys(a.docs).find((k) => !a.docs[k]);
+    let action = '';
+    if (a.status === 'submitted' && missing) {
+      action = `<h2>보낼 문구 미리보기</h2><div class="preview" data-testid="fix-preview">${esc(S.fixMessage(missing, S.addDays(st.today, S.FIX_DAYS)))}</div>
+        <div class="note">빠진 서류와 기한을 함께 안내해요</div><button class="btn" data-action="requestFix" data-id="${a.id}" data-doc="${missing}" data-testid="request-fix">보완 요청 보내기</button>`;
+    } else if (a.status === 'submitted') {
+      action = `<button class="btn" data-action="verify" data-id="${a.id}" data-testid="verify">서류 확인 완료</button>`;
+    } else if (a.status === 'needs_fix') {
+      action = `<div class="card warn">보완 요청을 보냈어요 · ${S.monthDay(a.fixDue)}까지</div>`;
+    } else {
+      action = `<div class="card soft">${STATUS[a.status][0]}</div>`;
+    }
+    return `${adminBadge}${back('reviewList', '신청 관리')}<h1>신청서 검토</h1>
+      <div class="card soft"><div class="result"><div class="mark" style="background:#fff;font-size:26px">🧑</div><div><b>신청자 ${esc(a.name)}</b><span class="muted">${TYPE_LABEL[a.type]}</span></div></div></div>
+      <h2>제출 서류</h2><div class="card">${docs}</div>${action}`;
+  }
+
+  function lottery(st) {
+    const by = (type, status) => st.applicants.filter((a) => a.type === type && a.status === status).length;
+    let body;
+    if (!st.lotteryDone) {
+      body = `<div class="card"><div class="row"><div class="grow">청년 추첨 대상</div><b>${by('youth', 'verified')}명</b><span class="muted">/ 50호</span></div>
+        <div class="row"><div class="grow">신혼부부 추첨 대상</div><b>${by('newlywed', 'verified')}명</b><span class="muted">/ 50호</span></div></div>
+        <div class="note">실제 추첨은 관계 공무원과 경찰 입회로 공개 진행해요. 이 화면은 결과 등록을 시연합니다.</div>
+        <button class="btn" data-action="lottery" data-testid="run-lottery">추첨 실행하고 결과 등록</button>`;
+    } else {
+      body = `<div class="card soft"><b>추첨 결과를 등록했어요</b></div><div class="card">
+        <div class="row"><div class="grow">청년</div>${pill(`당첨 ${by('youth', 'won')}`, 'green')} ${pill(`예비 ${by('youth', 'waitlist')}`, 'orange')}</div>
+        <div class="row"><div class="grow">신혼부부</div>${pill(`당첨 ${by('newlywed', 'won')}`, 'green')} ${pill(`예비 ${by('newlywed', 'waitlist')}`, 'orange')}</div></div>
+        <div class="note">당첨자에게 결과 알림을 보냈어요(시연).</div>`;
+    }
+    return `${adminBadge}${back('dashboard', '업무')}<h1>공개 추첨</h1>${body}`;
+  }
+
+  function deadline(st) {
+    const list = S.registerList(st);
+    const rows = list.slice(0, 20).map((p) => `<div class="row" data-testid="deadline-${p.id}"><div class="ic">🏠</div><div class="grow"><div class="ttl">${esc(p.name)}</div><div class="muted">${esc(p.unit)} · ${S.monthDay(p.due)}까지</div></div>${dday(p.left)}</div>`).join('');
+    return `${adminBadge}${back('dashboard', '입주 관리')}<h1>전입신고 기한</h1><p class="sub">입주 후 14일 안에 전입신고를 해야 해요</p>
+      <div class="card">${rows || '<div class="empty">기한이 남은 입주자가 없어요</div>'}</div>
+      <button class="btn ghost" data-action="notify" data-msg="기한 임박 입주자에게 안내 문자를 보냈어요(시연)" data-testid="notify-deadline">기한 임박 안내 보내기</button>`;
+  }
+
+  function repairs(st) {
+    const order = (r) => (r.status === 'done' ? 1 : 0);
+    const owner = (id) => (st.applicants.find((a) => a.id === id) || st.residents.find((r) => r.id === id) || {}).name;
+    const rows = st.repairs.slice().sort((a, b) => order(a) - order(b)).slice(0, 20).map((r) => `<div class="row click" data-action="openRepair" data-id="${r.id}" data-testid="repair-${r.id}"><div class="ic">🔧</div><div class="grow"><div class="ttl">${esc(r.kind)} · ${esc(owner(r.ownerId))}</div><div class="muted">${esc(r.unit)} · ${esc(r.desc)}</div></div>${pill(REPAIR_LABEL[r.status], r.status === 'done' ? 'green' : 'orange')}<span class="chev">›</span></div>`).join('');
+    return `${adminBadge}${back('dashboard', '업무')}<h1>고장 접수</h1><div class="card">${rows}</div>`;
+  }
+
+  function repairDetail(st, ui) {
+    const r = st.repairs.find((x) => x.id === ui.repairId);
+    if (!r) return repairs(st);
+    const owner = (st.applicants.find((a) => a.id === r.ownerId) || st.residents.find((x) => x.id === r.ownerId) || {}).name;
+    const next = { received: '확인했어요', checked: '방문 일정 잡기 (모레 오후)', scheduled: '처리 완료' }[r.status];
+    return `${adminBadge}${back('repairs', '고장 접수')}<h1>접수 처리</h1>
+      <div class="card gray"><b>${esc(owner)} · ${esc(r.unit)}</b><div class="muted">${S.monthDay(r.createdAt)} 접수 · ${esc(r.kind)}</div><div style="margin-top:8px">${esc(r.desc)}</div></div>
+      ${r.photo ? `<div class="photo" style="cursor:default"><img src="${esc(r.photo)}" alt="첨부 사진"></div>` : ''}
+      <h2>처리 단계</h2>${timeline(r)}
+      ${next ? `<button class="btn" data-action="repairNext" data-id="${r.id}" data-testid="repair-next">${next}</button>` : '<div class="card soft">처리를 마쳤어요</div>'}`;
+  }
+
+
+  function join(st, ui) {
+    const err = ui.joinError ? `<div class="card warn" data-testid="join-error">${esc(ui.joinError)}</div>` : '';
+    const adminForm = ui.adminOpen
+      ? `<div class="card"><div class="q"><label for="admin-code">반 코드</label><input id="admin-code" class="field" inputmode="numeric" maxlength="4" value="${esc(ui.codeDraft)}" data-testid="admin-code"></div>
+          <div class="q"><label for="admin-pin">담당자 PIN</label><input id="admin-pin" class="field" type="password" inputmode="numeric" maxlength="6" data-testid="admin-pin"></div>
+          <button class="btn" data-action="adminLogin" data-testid="admin-login" ${ui.busy ? 'disabled' : ''}>담당자로 시작</button></div>`
+      : '<button class="btn ghost" data-action="openAdmin" data-testid="open-admin">담당 공무원(강사)으로 시작</button>';
+    return `<div class="hero-bg join-hero"><div class="top">⌂ 화순군 만원 임대주택</div><h1>함께 체험해 볼까요?</h1><p class="sub">강사가 알려 준 반 코드 4자리를 넣어 주세요</p></div>
+      ${err}
+      <div class="card"><input id="join-code" class="field big-field" inputmode="numeric" maxlength="4" placeholder="0000" value="${esc(ui.codeDraft)}" data-testid="join-code">
+        <button class="btn" data-action="joinClass" data-testid="join-class" ${ui.busy ? 'disabled' : ''}>${ui.busy ? '입장하는 중…' : '입장하기'}</button>
+        <div class="note">이름은 '가상 501'처럼 자동으로 정해져요. 실명·연락처는 받지 않아요.</div></div>
+      <button class="btn ghost" data-action="soloMode" data-testid="solo-mode">혼자 체험하기 (인터넷 없이)</button>
+      ${adminForm}`;
+  }
+
+  const SCREENS = { join, home, eligibility, apply, my, result, alerts, guide, repair, repairStatus, dashboard, reviewList, reviewDetail, lottery, deadline, repairs, repairDetail };
+  const TABS = {
+    applicant: [['home', '⌂', '홈'], ['my', '☰', '내 신청'], ['alerts', '🔔', '알림']],
+    resident: [['guide', '✓', '입주 준비'], ['repair', '🔧', '고장 접수'], ['repairStatus', '☰', '내 접수']],
+    admin: [['dashboard', '⌂', '업무'], ['reviewList', '📄', '신청 관리'], ['deadline', '⏰', '입주 관리'], ['repairs', '🔧', '고장']],
+  };
+  const TAB_OF = { eligibility: 'home', apply: 'home', result: 'home', reviewDetail: 'reviewList', lottery: 'dashboard', repairDetail: 'repairs' };
+
+  function screen(st, ui) {
+    return (SCREENS[st.screen] || home)(st, ui);
+  }
+
+  function tabs(st) {
+    const active = TAB_OF[st.screen] || st.screen;
+    return TABS[st.role].map(([s, ic, label]) => `<button class="${active === s ? 'on' : ''}" data-action="go" data-screen="${s}" data-testid="tab-${s}"><span class="ic">${ic}</span>${label}</button>`).join('');
+  }
+
+  return { screen, tabs, SCREENS };
+})();
+
+const Net = (() => {
+  const URL = 'https://ubjsdvkbtcjixefytioe.supabase.co';
+  const KEY = 'sb_publishable_6qD8keT6Uv-GwZHRkJQ5kA_Kl7qUFJY';
+  const TIMEOUT = 8000;
+
+  const ERRORS = {
+    'unknown class': '없는 반 코드예요', 'class full': '반 정원이 찼어요', 'wrong pin': 'PIN이 맞지 않아요',
+    locked: 'PIN을 여러 번 틀려 2분 동안 잠겼어요', 'unknown participant': '입장 정보가 사라졌어요. 다시 입장해 주세요',
+  };
+
+  async function rpc(name, args) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), TIMEOUT);
+    try {
+      const res = await fetch(`${URL}/rest/v1/rpc/${name}`, {
+        method: 'POST', signal: ctrl.signal,
+        headers: { apikey: KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify(args),
+      });
+      const body = await res.json().catch(() => null);
+      if (!res.ok) throw new Error((body && body.message) || `HTTP ${res.status}`);
+      if (body && body.error) throw new Error(body.error);
+      return body;
+    } catch (e) {
+      const msg = e.name === 'AbortError' ? 'timeout' : e.message;
+      const known = ERRORS[msg] || (msg === 'timeout' ? '응답이 늦어요' : null);
+      const err = new Error(known || '처리하지 못했어요. 잠시 뒤 다시 해 주세요');
+      err.code = msg;
+      err.offline = e.name === 'AbortError' || e instanceof TypeError;
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function newToken() {
+    const bytes = new Uint8Array(24);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function toApplicant(p) {
+    return {
+      id: `P${p.id}`, rid: p.id, remote: true, name: p.name, type: p.type, status: p.status,
+      docs: p.docs, fixDue: p.fixDue, fixMsg: p.fixMsg, waitNo: null, unit: p.unit,
+      contractDone: p.contractDone, moveInDate: p.moveInDate, registered: p.registered, appliedAt: p.appliedAt,
+    };
+  }
+
+  function toRepair(r, units, photos) {
+    return {
+      id: `Q${r.id}`, rid: r.id, remote: true, ownerId: `P${r.participantId}`, unit: units[r.participantId] || '',
+      kind: r.kind, desc: r.desc, photo: photos[r.id] || null, status: r.status, visit: r.visit, createdAt: r.createdAt,
+    };
+  }
+
+  function merge(local, remote, meId, photos) {
+    const st = structuredClone(local);
+    const people = remote.participants.map(toApplicant);
+    const units = Object.fromEntries(remote.participants.map((p) => [p.id, p.unit]));
+    st.applicants = [...people, ...st.applicants.filter((a) => a.id !== 'A001')];
+    st.repairs = [...remote.repairs.map((r) => toRepair(r, units, photos)), ...st.repairs.filter((r) => !r.remote)];
+    st.today = remote.today;
+    st.lotteryDone = remote.lotteryDone;
+    st.meId = meId;
+    return st;
+  }
+
+  const DATE = /^\d{4}-\d{2}-\d{2}$/;
+  const STATUSES = ['none', 'submitted', 'needs_fix', 'verified', 'won', 'waitlist', 'lost'];
+  const KINDS = ['보일러', '누수', '도배', '기타'];
+  const REPAIR_STATUSES = ['received', 'checked', 'scheduled', 'done'];
+  const optDate = (v) => v === null || (typeof v === 'string' && DATE.test(v));
+  const optText = (v) => v === null || typeof v === 'string';
+
+  function validParticipant(p) {
+    const d = p && p.docs;
+    return Boolean(p && Number.isInteger(p.id) && typeof p.name === 'string' && ['youth', 'newlywed'].includes(p.type) && STATUSES.includes(p.status)
+      && d && !Array.isArray(d) && ['application', 'consent', 'resident'].every((k) => typeof d[k] === 'boolean')
+      && typeof p.contractDone === 'boolean' && typeof p.registered === 'boolean'
+      && optDate(p.fixDue) && optDate(p.moveInDate) && optDate(p.appliedAt) && optText(p.fixMsg) && optText(p.unit));
+  }
+
+  function validState(r, mode) {
+    if (!(r && typeof r.today === 'string' && DATE.test(r.today) && typeof r.lotteryDone === 'boolean'
+      && Array.isArray(r.participants) && Array.isArray(r.repairs) && r.participants.every(validParticipant))) return false;
+    const ids = new Set(r.participants.map((p) => p.id));
+    if (ids.size !== r.participants.length) return false;
+    if (mode === 'class' && !(Number.isInteger(r.meId) && ids.has(r.meId))) return false;
+    if (new Set(r.repairs.map((x) => x.id)).size !== r.repairs.length) return false;
+    return r.repairs.every((x) => Number.isInteger(x.id) && ids.has(x.participantId) && KINDS.includes(x.kind)
+      && typeof x.desc === 'string' && REPAIR_STATUSES.includes(x.status) && optText(x.visit) && typeof x.createdAt === 'string' && DATE.test(x.createdAt));
+  }
+
+  return { rpc, newToken, merge, validState };
+})();
+
+if (typeof module !== 'undefined') module.exports = Net;
+
+(() => {
+  const KEY = 'hwasun-demo-v1';
+  const SESSION_KEY = 'hwasun-session-v1';
+  const PHOTO_KEY = 'hwasun-photos-v1';
+  const POLL_MS = 2500;
+  const MAX_PHOTO = 2 * 1024 * 1024;
+  const ROLES = [['applicant', '신청자'], ['resident', '입주자'], ['admin', '담당 공무원']];
+  const WEEK = ['일', '월', '화', '수', '목', '금', '토'];
+  const $ = (id) => document.getElementById(id);
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* @allow 저장소 차단·용량 초과 시에도 메모리로 계속 동작 */ } },
+  };
+
+  const freshUi = () => ({
+    elig: {}, docs: { application: false, consent: false, resident: false },
+    reviewFilter: 'submitted', reviewId: null, repairId: null, repair: { kind: null, desc: '', photo: null },
+    joinError: '', adminOpen: false, busy: false, codeDraft: new URLSearchParams(location.search).get('code') || '',
+  });
+
+  function isValid(st) {
+    return Boolean(st && typeof st.today === 'string' && Views.SCREENS[st.screen] && ['applicant', 'resident', 'admin'].includes(st.role)
+      && Array.isArray(st.applicants) && st.applicants.some((a) => a.id === st.meId) && Array.isArray(st.residents) && Array.isArray(st.repairs));
+  }
+
+  function validSession(s) {
+    if (!s || typeof s !== 'object') return false;
+    if (s.mode === 'solo') return true;
+    if (s.mode === 'class') return /^[0-9]{4}$/.test(s.code) && /^[0-9a-f]{48}$/.test(s.token);
+    return false;
+  }
+
+  let session = store.get(SESSION_KEY, null);
+  if (!validSession(session)) session = { mode: 'none' };
+  let pin = null;
+  let gen = 0;
+  let pending = false;
+  let lastRemoteKey = '';
+  let failCount = 0;
+  let nextPollAt = 0;
+  let local = store.get(KEY, null);
+  if (!isValid(local)) local = Store.seed();
+  let remote = null;
+  const savedPhotos = store.get(PHOTO_KEY, {});
+  const photos = savedPhotos && typeof savedPhotos === 'object' && !Array.isArray(savedPhotos) ? savedPhotos : {};
+  let ui = freshUi();
+  let online = true;
+  let inflight = false;
+  let toastTimer = null;
+
+  if (session.mode === 'none') {
+    session = { mode: 'none' };
+    local = { ...Store.seed(), screen: 'join' };
+  }
+
+  const connected = () => session.mode === 'class' || session.mode === 'admin';
+
+  function view() {
+    if (!connected() || !remote) return local;
+    const meId = session.mode === 'class' ? `P${remote.meId}` : 'A001';
+    const merged = Net.merge(local, remote, meId, photos);
+    if (session.mode === 'admin') merged.applicants.push(local.applicants.find((a) => a.id === 'A001'));
+    return merged;
+  }
+
+  const ALLOWED_ROLES = { solo: ['applicant', 'resident', 'admin'], class: ['applicant', 'resident'], admin: ['admin'], none: ['applicant'] };
+  const ACTION_ROLE = {
+    elig: 'applicant', toggleDoc: 'applicant', submitApp: 'applicant', resubmit: 'applicant',
+    contract: 'resident', moveIn: 'resident', register: 'resident', pickKind: 'resident', submitRepair: 'resident',
+    requestFix: 'admin', verify: 'admin', lottery: 'admin', repairNext: 'admin', openReview: 'admin', openRepair: 'admin', reviewFilter: 'admin', notify: 'admin',
+  };
+  const ROLE_MODES = { applicant: ['solo', 'class'], resident: ['solo', 'class'], admin: ['solo', 'admin'] };
+  const COMMON_ACTIONS = new Set(['go', 'setRole', 'reset', 'leave', 'soloMode', 'openAdmin', 'joinClass', 'adminLogin']);
+  function allowed(action) {
+    if (COMMON_ACTIONS.has(action)) return true;
+    if (action === 'shift') return session.mode === 'solo' || session.mode === 'admin';
+    const role = ACTION_ROLE[action];
+    return Boolean(role) && local.role === role && ROLE_MODES[role].includes(session.mode);
+  }
+
+  function normalizeRole() {
+    const roles = ALLOWED_ROLES[session.mode];
+    if (!roles.includes(local.role)) local = Store.reduce(local, { type: 'setRole', role: roles[0] });
+  }
+
+  function persist() {
+    store.set(KEY, local);
+    store.set(SESSION_KEY, session);
+  }
+
+  function toast(msg) {
+    const el = $('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+  }
+
+  function dateLabel(s) {
+    const [y, m, d] = s.split('-').map(Number);
+    return `${m}월 ${d}일 (${WEEK[new Date(Date.UTC(y, m - 1, d)).getUTCDay()]})`;
+  }
+
+  function renderControl(st) {
+    const mode = session.mode;
+    document.body.dataset.mode = mode;
+    const roles = mode === 'solo' ? ROLES : mode === 'admin' ? [['admin', '담당 공무원']] : [];
+    $('roles').innerHTML = roles.map(([r, label]) => `<button class="${st.role === r ? 'on' : ''}" data-action="setRole" data-role="${r}" data-testid="role-${r}">${label}</button>`).join('');
+    const canShift = mode === 'solo' || mode === 'admin';
+    $('date').innerHTML = mode === 'none' ? '' : `<span>시연 날짜</span>${canShift ? '<button data-action="shift" data-n="-1" data-testid="day-prev">‹ 하루</button>' : ''}<b data-testid="today">${dateLabel(st.today)}</b>${canShift ? '<button data-action="shift" data-n="1" data-testid="day-next">하루 ›</button><button data-action="shift" data-n="7" data-testid="day-week">+7일</button>' : ''}`;
+    const net = connected() ? `<span class="net ${online ? 'ok' : 'bad'}" data-testid="net">${online ? '● 연결됨' : '● 재연결 중'}</span>` : '';
+    const codeChip = mode === 'admin' ? `<span class="code-chip">반 ${session.code}</span>` : '';
+    $('ctl-extra').innerHTML = mode === 'none' ? '' : `${net}${codeChip}<button class="ctl-reset" data-action="reset" data-testid="reset">처음 상태로</button><button class="ctl-reset" data-action="leave" data-testid="leave">나가기</button>`;
+    const me = st.applicants.find((a) => a.id === st.meId);
+    const seg = (r, label) => `<button class="${st.role === r ? 'on' : ''}" data-action="setRole" data-role="${r}" data-testid="seg-${r}">${label}</button>`;
+    if (mode === 'class') {
+      $('modebar').innerHTML = `<span class="who" data-testid="who">${me ? me.name : ''}</span><div class="seg">${seg('applicant', '신청')}${seg('resident', '입주')}</div><span class="net ${online ? 'ok' : 'bad'}">${online ? '●' : '○ 재연결 중'}</span><button class="mini" data-action="leave" data-testid="leave-mobile">나가기</button>`;
+    } else if (mode === 'solo') {
+      $('modebar').innerHTML = `<span class="who">혼자 체험</span><div class="seg">${seg('applicant', '신청')}${seg('resident', '입주')}${seg('admin', '담당')}</div><button class="mini" data-action="leave">나가기</button>`;
+    } else {
+      $('modebar').innerHTML = '';
+    }
+  }
+
+  function render() {
+    if (session.mode !== 'none') normalizeRole();
+    const st = view();
+    ui.mode = session.mode;
+    ui.code = session.code;
+    renderControl(st);
+    if (connected() && !remote) {
+      $('screen').innerHTML = `<div class="empty" data-testid="loading">${online ? '반 상태를 불러오는 중이에요…' : '연결을 기다리는 중이에요. 잠시 뒤 다시 시도해요.'}</div>`;
+      $('tabs').innerHTML = '';
+      return;
+    }
+    $('screen').innerHTML = Views.screen(st, ui);
+    $('tabs').innerHTML = st.screen === 'join' ? '' : Views.tabs(st);
+  }
+
+  function apply(action) {
+    local = Store.reduce(local, action);
+    persist();
+  }
+
+  function go(screen) {
+    apply({ type: 'go', screen });
+    render();
+    $('screen').scrollTop = 0;
+  }
+
+  async function rejoin(myGen, code) {
+    const token = Net.newToken();
+    await Net.rpc('hwasun_join', { p_code: code, p_token: token });
+    if (myGen !== gen) return;
+    session = { mode: 'class', code, token };
+    local = { ...Store.seed(), role: 'applicant', screen: 'home' };
+    ui = freshUi();
+    persist();
+    toast('강사가 처음 상태로 되돌렸어요');
+    const fresh = await Net.rpc('hwasun_state_me', { p_token: token });
+    if (myGen === gen && Net.validState(fresh, 'class')) remote = fresh;
+  }
+
+  function resetPolling() {
+    pending = false;
+    failCount = 0;
+    nextPollAt = 0;
+  }
+
+  function leave() {
+    gen += 1;
+    resetPolling();
+    session = { mode: 'none' };
+    remote = null;
+    lastRemoteKey = '';
+    pin = null;
+    local = { ...Store.seed(), screen: 'join' };
+    ui = freshUi();
+    persist();
+    render();
+  }
+
+  async function refresh() {
+    if (!connected()) return;
+    if (inflight) { pending = true; return; }
+    inflight = true;
+    const myGen = gen;
+    const snap = { ...session };
+    let changed = false;
+    try {
+      const fresh = snap.mode === 'class'
+        ? await Net.rpc('hwasun_state_me', { p_token: snap.token })
+        : await Net.rpc('hwasun_state_admin', { p_code: snap.code, p_pin: pin });
+      if (myGen !== gen) return;
+      if (!Net.validState(fresh, snap.mode)) throw Object.assign(new Error('상태 형식 오류'), { code: 'bad state' });
+      const key = JSON.stringify(fresh);
+      changed = key !== lastRemoteKey || !online;
+      lastRemoteKey = key;
+      remote = fresh;
+      if (snap.mode === 'admin' && remote.lotteryDone && !local.lotteryDone) apply({ type: 'runLottery' });
+      if (snap.mode === 'admin' && !remote.lotteryDone && local.lotteryDone) { local = { ...Store.seed(), role: 'admin', screen: local.screen }; persist(); }
+      online = true;
+      failCount = 0;
+      nextPollAt = 0;
+    } catch (e) {
+      if (myGen !== gen) return;
+      if (e.code === 'unknown participant' && snap.mode === 'class') {
+        try { await rejoin(myGen, snap.code); online = true; changed = true; } catch (err) { online = false; }
+      } else if (e.code === 'wrong pin' || e.code === 'locked' || e.code === 'unknown class') {
+        toast(e.message);
+        leave();
+        return;
+      } else {
+        changed = online || !remote;
+        online = false;
+        failCount += 1;
+        nextPollAt = Date.now() + Math.min(30000, POLL_MS * 2 ** failCount);
+      }
+    } finally {
+      inflight = false;
+      if (pending) { pending = false; setTimeout(refresh, 0); }
+    }
+    if (myGen === gen && connected() && changed) render();
+  }
+
+  async function run(fn, msg) {
+    const myGen = gen;
+    try {
+      await fn();
+      if (myGen !== gen) return false;
+      if (msg) toast(msg);
+      lastRemoteKey = '';
+      await refresh();
+      return myGen === gen;
+    } catch (e) {
+      if (myGen !== gen) return false;
+      toast(e.offline ? '연결이 불안정해요. 잠시 뒤 다시 눌러 주세요' : e.message);
+      render();
+      return false;
+    }
+  }
+
+  const rid = (id) => Number(String(id).slice(1));
+  const asMe = (name, extra = {}) => {
+    if (session.mode !== 'class' || !session.token) return Promise.reject(Object.assign(new Error('수강생으로 입장해 주세요'), { code: 'not participant' }));
+    return Net.rpc(name, { p_token: session.token, ...extra });
+  };
+  const asAdmin = (name, extra = {}) => {
+    if (session.mode !== 'admin' || !pin) return Promise.reject(Object.assign(new Error('담당자만 할 수 있어요'), { code: 'not admin' }));
+    return Net.rpc(name, { p_code: session.code, p_pin: pin, ...extra });
+  };
+
+  async function startClass(code) {
+    ui.busy = true; ui.joinError = ''; render();
+    const token = Net.newToken();
+    const myGen = ++gen;
+    pin = null;
+    resetPolling();
+    try {
+      await Net.rpc('hwasun_join', { p_code: code, p_token: token });
+      if (myGen !== gen) return;
+      session = { mode: 'class', code, token };
+      remote = null;
+      lastRemoteKey = '';
+      local = { ...Store.seed(), role: 'applicant', screen: 'home' };
+      ui = freshUi();
+      persist();
+      await refresh();
+      toast('입장했어요');
+    } catch (e) {
+      if (myGen !== gen) return;
+      ui.busy = false;
+      ui.joinError = e.offline ? "인터넷에 연결할 수 없어요. '혼자 체험하기'로 해 보세요" : e.message;
+      render();
+    }
+  }
+
+  async function startAdmin(code, value) {
+    ui.busy = true; ui.joinError = ''; render();
+    const myGen = ++gen;
+    resetPolling();
+    try {
+      const ok = await Net.rpc('hwasun_admin_check', { p_code: code, p_pin: value });
+      if (myGen !== gen) return;
+      if (!ok) throw new Error('PIN이 맞지 않아요');
+      session = { mode: 'admin', code };
+      pin = value;
+      remote = null;
+      lastRemoteKey = '';
+      local = { ...Store.seed(), role: 'admin', screen: 'dashboard' };
+      ui = freshUi();
+      persist();
+      await refresh();
+    } catch (e) {
+      if (myGen !== gen) return;
+      ui.busy = false;
+      ui.joinError = e.offline ? '인터넷에 연결할 수 없어요' : e.message;
+      ui.adminOpen = true;
+      render();
+    }
+  }
+
+  const local1 = (action, msg) => { apply(action); render(); if (msg) toast(msg); };
+
+  const HANDLERS = {
+    go: (d) => { if (d.filter) ui.reviewFilter = d.filter; go(d.screen); },
+    setRole: (d) => {
+      if (!ALLOWED_ROLES[session.mode].includes(d.role)) return;
+      apply({ type: 'setRole', role: d.role }); render(); $('screen').scrollTop = 0;
+    },
+    shift: (d) => {
+      if (session.mode === 'admin') run(() => asAdmin('hwasun_set_date', { p_date: Store.addDays(view().today, Number(d.n)) }));
+      else local1({ type: 'shiftDay', n: Number(d.n) });
+    },
+    reset: () => {
+      ui = freshUi();
+      if (session.mode === 'admin') {
+        run(async () => { await asAdmin('hwasun_reset'); local = { ...Store.seed(), role: 'admin', screen: 'dashboard' }; persist(); }, '반 전체를 처음 상태로 되돌렸어요');
+      } else if (session.mode === 'class') {
+        toast('처음 상태로 되돌리기는 강사만 할 수 있어요');
+      } else { local = Store.seed(); persist(); render(); toast('처음 상태로 되돌렸어요'); }
+    },
+    leave: () => leave(),
+    soloMode: () => { gen += 1; resetPolling(); pin = null; remote = null; session = { mode: 'solo' }; local = Store.seed(); ui = freshUi(); persist(); render(); },
+    openAdmin: () => { ui.adminOpen = true; render(); },
+    joinClass: () => {
+      const code = ($('join-code').value || '').trim();
+      if (!/^[0-9]{4}$/.test(code)) { ui.joinError = '반 코드는 숫자 4자리예요'; ui.codeDraft = code; render(); return; }
+      startClass(code);
+    },
+    adminLogin: () => {
+      const code = ($('admin-code').value || '').trim();
+      const value = ($('admin-pin').value || '').trim();
+      if (!/^[0-9]{4}$/.test(code) || !/^[0-9]{6}$/.test(value)) { ui.joinError = '반 코드 4자리와 PIN 6자리를 넣어 주세요'; ui.adminOpen = true; render(); return; }
+      startAdmin(code, value);
+    },
+    elig: (d) => { ui.elig[d.key] = d.value; render(); },
+    toggleDoc: (d) => { ui.docs[d.doc] = !ui.docs[d.doc]; render(); },
+    submitApp: async () => {
+      const applicantType = ui.elig.household === 'newlywed' ? 'newlywed' : 'youth';
+      if (session.mode === 'class') {
+        if (await run(() => asMe('hwasun_submit', { p_type: applicantType, p_docs: ui.docs }), '신청서를 냈어요')) go('my');
+      } else { apply({ type: 'submitApplication', docs: ui.docs, applicantType }); toast('신청서를 냈어요'); go('my'); }
+    },
+    resubmit: (d) => (session.mode === 'class'
+      ? run(() => asMe('hwasun_resubmit', { p_doc: d.doc }), '서류를 다시 올렸어요')
+      : local1({ type: 'resubmit', doc: d.doc }, '서류를 다시 올렸어요')),
+    reviewFilter: (d) => { ui.reviewFilter = d.filter; render(); },
+    openReview: (d) => { ui.reviewId = d.id; go('reviewDetail'); },
+    requestFix: (d) => (d.id.startsWith('P')
+      ? run(() => asAdmin('hwasun_request_fix', { p_id: rid(d.id), p_doc: d.doc }), '보완 요청을 보냈어요')
+      : local1({ type: 'requestFix', id: d.id, doc: d.doc }, '보완 요청을 보냈어요')),
+    verify: (d) => (d.id.startsWith('P')
+      ? run(() => asAdmin('hwasun_verify', { p_id: rid(d.id) }), '서류 확인을 마쳤어요')
+      : local1({ type: 'verify', id: d.id }, '서류 확인을 마쳤어요')),
+    lottery: () => {
+      if (session.mode === 'admin') run(async () => { await asAdmin('hwasun_lottery'); apply({ type: 'runLottery' }); }, '추첨 결과를 등록했어요');
+      else local1({ type: 'runLottery' }, '추첨 결과를 등록했어요');
+    },
+    contract: () => (session.mode === 'class' ? run(() => asMe('hwasun_contract'), '계약을 마쳤어요') : local1({ type: 'signContract' }, '계약을 마쳤어요')),
+    moveIn: () => (session.mode === 'class' ? run(() => asMe('hwasun_move_in'), '입주를 환영해요') : local1({ type: 'moveIn' }, '입주를 환영해요')),
+    register: () => (session.mode === 'class' ? run(() => asMe('hwasun_register'), '전입신고를 확인했어요') : local1({ type: 'registerAddress' }, '전입신고를 확인했어요')),
+    pickKind: (d) => { ui.repair.kind = d.kind; render(); },
+    submitRepair: async () => {
+      const { kind, photo } = ui.repair;
+      const desc = ui.repair.desc.trim();
+      if (session.mode === 'class') {
+        const ok = await run(async () => {
+          const res = await asMe('hwasun_repair', { p_kind: kind, p_desc: desc });
+          if (photo) { photos[res.id] = photo; store.set(PHOTO_KEY, photos); }
+        }, '고장을 접수했어요');
+        if (!ok) return;
+      } else {
+        apply({ type: 'submitRepair', kind, desc, photo });
+        toast('고장을 접수했어요');
+      }
+      ui.repair = { kind: null, desc: '', photo: null };
+      go('repairStatus');
+    },
+    openRepair: (d) => { ui.repairId = d.id; go('repairDetail'); },
+    repairNext: (d) => (d.id.startsWith('Q')
+      ? run(() => asAdmin('hwasun_repair_next', { p_id: rid(d.id) }), '처리 단계를 바꿨어요')
+      : local1({ type: 'repairNext', id: d.id }, '처리 단계를 바꿨어요')),
+    notify: (d) => toast(d.msg),
+  };
+
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-action]');
+    if (!el || el.disabled || el.tagName === 'INPUT') return;
+    const fn = HANDLERS[el.dataset.action];
+    if (fn && allowed(el.dataset.action)) fn(el.dataset);
+  });
+
+  document.addEventListener('input', (e) => {
+    if (e.target.id === 'join-code' || e.target.id === 'admin-code') { ui.codeDraft = e.target.value; return; }
+    if (e.target.id !== 'repair-desc') return;
+    ui.repair.desc = e.target.value;
+    const btn = document.querySelector('[data-action="submitRepair"]');
+    if (btn) btn.disabled = !(ui.repair.kind && ui.repair.desc.trim());
+  });
+
+  document.addEventListener('change', (e) => {
+    if (e.target.dataset.action !== 'pickPhoto') return;
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (file.size > MAX_PHOTO) { toast('사진은 2MB 이하로 올려 주세요'); return; }
+    if (!/^image\//.test(file.type)) { toast('사진 파일만 올릴 수 있어요'); return; }
+    const myGen = gen;
+    const reader = new FileReader();
+    reader.onload = () => { if (myGen !== gen) return; ui.repair.photo = reader.result; render(); };
+    reader.readAsDataURL(file);
+  });
+
+  setInterval(() => { if (!document.hidden && Date.now() >= nextPollAt) refresh(); }, POLL_MS);
+  window.addEventListener('online', () => { nextPollAt = 0; refresh(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+  if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+
+  render();
+  refresh();
+})();
+</script>
+</body>
+</html>
